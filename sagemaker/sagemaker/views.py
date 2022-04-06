@@ -26,7 +26,6 @@ def inicio(request):
         "rb",
     )
 
-    
     marca_model_id = open(
         os.path.dirname(os.path.realpath(__file__)) +
         "/json/marca_model_id.json",
@@ -63,7 +62,8 @@ def inicio(request):
         hp = request.POST['hp']
 
     
-        data_usuario = "{fuelType},{km},{make},{model},{transmissionType},{year},{cubicCapacity},{doors},{hp}"
+        data_usuario = f"{fuelType},{km},{make},{model},{transmissionType},{year},{cubicCapacity},{doors},{hp}"
+        # print(data_usuario)
 
         client = boto3.Session(
             aws_access_key_id=aws_access_key_ID,
