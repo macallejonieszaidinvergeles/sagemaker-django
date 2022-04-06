@@ -19,11 +19,8 @@ from django.conf import settings
 # 'fuelType', 'km', 'make', 'model', 'price', 'transmissionType', 'year',
 #        'cubicCapacity', 'doors', 'hp'
 
-
 def inicio(request):
-
     # ----------------------lectura de json para los select ---------------------------
-
     marcas_id = open(
         os.path.dirname(os.path.realpath(__file__)) + "/json/marcas_id.json",
         "rb",
