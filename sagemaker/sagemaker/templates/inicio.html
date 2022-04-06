@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <title>Registro Coche Sagemaker</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1 class="text-center">Registro datos coche Sagemaker</h1>
+    <div class="row">
+
+      <!-- <div style="display: none" id="jsonData" data-json="{{ marcas_id|safe }}"></div> -->
+
+      <form action="" method="POST">
+        {% csrf_token %}
+        <!--  fuelTypeId	km	makeId	modelId	transmissionTypeId	year	cubicCapacity	doors	hp -->
+
+        <div class="form-group row">
+
+          <div class="col-sm-4 mt-5">
+            <label for="exampleFormControlSelect1">fuelType</label>
+            <select class="form-control" id="exampleFormControlSelect1" name="fuelType" required>
+              <option value="1" selected="selected">Diesel</option>
+              <option value="2">Gasolina</option>
+              <option value="3">Electrico</option>
+              <option value="4">Hibrido</option>
+              <option value="5">Hibrido enchufable</option>
+              <option value="6">Gas licuado (GLP)</option>
+              <option value="7">Gas natural (CNG)</option>
+            </select>
+          </div>
+
+          <!-- select de las marcas -->
+          <div class="col-sm-4 mt-5">
+            <label for="select_marcas_id">Make</label>
+            <select class="form-control" id="select_marcas_id" name="make" required>
+            </select>
+          </div>
+
+
+          <!-- select de los modelos -->
+          <div class="col-4 mt-5">
+            <label for="select_model_id">model</label>
+            <select class="form-control" id="select_model_id" name="model" required>
+            </select>
+          </div>
+
+          <div class="col-sm-4 mt-5">
+            <label for="km">Km:</label>
+            <input type="text" class="form-control" id="km" name="km" aria-describedby="km" placeholder="Enter Km"
+              required>
+          </div>
+
+          <div class="col-sm-4 mt-5">
+            <label for="select_tranmision">Transmission Type</label>
+            <select class="form-control" id="select_tranmision" name="transmissionType" required>
+              <option value="COMMON.TRANSMISSION_MANUAL" selected="selected">Manual</option>
+              <option value="COMMON.TRANSMISSION_AUTOMATIC">Automatico</option>
+            </select>
+          </div>
+
+          <div class="col-sm-4 mt-5">
+            <label for="year">Year:</label>
+            <input type="number" class="form-control" id="year" name="year" aria-describedby="year"
+              placeholder="Enter Year" required>
+          </div>
+
+
+
+          <div class="col-sm-4 mt-5">
+            <label for="cubicCapacity">cubicCapacity:</label>
+            <input type="text" class="form-control" id="cubicCapacity" name="cubicCapacity"
+              aria-describedby="cubicCapacity" placeholder="Enter cubicCapacity" required>
+          </div>
+
+
+          <div class="col-sm-4 mt-5">
+            <label for="select_doors">doors</label>
+            <select class="form-control" id="select_doors" name="doors" required>
+              <option value="3" selected="selected">3</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+
+          <div class="col-sm-4 mt-5">
+            <label for="cubicCapacity">hp:</label>
+            <input type="text" class="form-control" id="hp" name="hp" aria-describedby="hp" placeholder="Enter hp"
+              required>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-10"></div>
+          <div class="col-2">
+            <input type="submit" class="btn btn-primary mt-5" value="Valorar">
+          </div>
+
+
+        </div>
+
+
+
+      </form>
+
+    </div>
+    <br>
+    {% if predict%}
+    <h1>Prediction</h1>
+    <h5>Model:</h5>
+    <p>{{model}}</p>
+    <h5>Precio predict:</h5>
+    <p>{{ predict }}</p>
+    {% endif %}
+
+
+
+
+  </div>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+    crossorigin="anonymous"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+    crossorigin="anonymous"></script>
+
+
+  <!-- este script es para rellenar el select de las marcas, con su id en el value -->
+  <script>
+    window.onload = function () {
+
+      var myDjangoList = (("{{marcas_id}}").replace(/&(l|g|quo)t;/g, function (a, b) {
+        return {
+          l: '<',
+          g: '>',
+          quo: '"'
+        }[b];
+      }));
+
+      myDjangoList = myDjangoList.replace(/u'/g, '\'')
+      myDjangoList = myDjangoList.replace(/'/g, '\"')
+
+      const myObj = JSON.parse(myDjangoList);
+
+      const select = document.getElementById('select_marcas_id');
+
+      for (let i = 0; i < myObj.length; i++) {
+
+        const option = document.createElement('option');
+        option.text = myObj[i]["make"];
+        option.value = myObj[i]["make"];
+        select.appendChild(option);
+      }
+
+
+      // para los modelos
+
+      var myDjangoList2 = (("{{marca_model_id}}").replace(/&(l|g|quo)t;/g, function (a, b) {
+        return {
+          l: '<',
+          g: '>',
+          quo: '"'
+        }[b];
+      }));
+
+      const select2 = document.getElementById('select_model_id');
+
+
+      myDjangoList2 = myDjangoList2.replace(/u'/g, '\'')
+      myDjangoList2 = myDjangoList2.replace(/'/g, '\"')
+
+      const myObj2 = JSON.parse(myDjangoList2);
+      console.log("myObj2", myObj2)
+
+      select.addEventListener("click", function () {
+
+        // para limpiar el select2 y renovar las opciones a la actual
+        for (let i = select2.options.length; i >= 0; i--) {
+          select2.remove(i);
+        }
+
+
+        var marca = select.options[select.selectedIndex].text;
+        // alert(marca)
+        for (let i = 0; i < myObj2.length; i++) {
+          console.log("seleccionado", myObj2[i]["make"], myObj2[i]["model"])
+          const option = document.createElement('option');
+          if (marca.toString() == myObj2[i]["make"].toString()) {
+            option.text = myObj2[i]["model"];
+            option.value = myObj2[i]["model"];
+            select2.appendChild(option);
+          }
+
+        }
+      });
+
+    };
+
+  </script>
+
+
+
+</body>
+
+</html>
